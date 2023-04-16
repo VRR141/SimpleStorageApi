@@ -1,0 +1,18 @@
+server:
+  port: 8888
+  servlet:
+    context-path: /cloud_service
+spring:
+  liquibase:
+    change-log: classpath:liquibase/changelog-master.yaml
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/cloud_service}
+    password: ${SPRING_DATASOURCE_PASS:q1w2e3r4}
+    username: ${SPRING_DATASOURCE_USER:postgres}
+  jpa:
+    show-sql: true
+cors:
+  mapping: /**
+  origins: http://localhost:8080/, http://192.168.50.199:8080/
+  methods: "*"
+  headers: "*"

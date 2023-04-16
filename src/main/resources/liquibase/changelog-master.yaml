@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/sql/14_04_2023_client_client_profile_db.sql
+encoding: "UTF-8"
