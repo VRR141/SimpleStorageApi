@@ -9,6 +9,7 @@ import org.vrr.simplecloudservice.domain.Client;
 import org.vrr.simplecloudservice.domain.ClientProfile;
 import org.vrr.simplecloudservice.repo.ClientProfileRepository;
 import org.vrr.simplecloudservice.repo.jpa.ClientJpaRepository;
+import org.vrr.simplecloudservice.service.CloudStorageService;
 import org.vrr.simplecloudservice.service.RegistrationService;
 
 import java.util.UUID;
@@ -23,7 +24,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final ClientJpaRepository clientJpaRepository;
 
     private final CloudStorageService cloudStorageService;
-
 
     private final PasswordEncoder passwordEncoder;
 

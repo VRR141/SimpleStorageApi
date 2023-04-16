@@ -11,5 +11,5 @@ public class FileResponseDto {
     @JsonProperty("filename")
     private String fileName;
 
-    private Integer size;
+    private Long size;
 }

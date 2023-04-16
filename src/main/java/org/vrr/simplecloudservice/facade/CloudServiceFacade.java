@@ -24,9 +24,4 @@ public class CloudServiceFacade {
         ClientProfile clientProfile = mapper.mapRegistrationRequestDtoToClientProfile(dto);
         registrationService.registerClient(clientProfile);
     }
-
-    public void checkOk(){
-        log.error("{}", authProvider.getAuthorizedUser());
-        log.error("{}", authProvider.getAuthorizedUserUuid());
-    }
 }

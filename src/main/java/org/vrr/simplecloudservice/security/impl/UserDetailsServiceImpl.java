@@ -16,6 +16,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final ClientProfileRepository clientProfileRepository;
 
+
+    //TODO add caching
+
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

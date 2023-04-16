@@ -1,35 +1,60 @@
 package org.vrr.simplecloudservice.rest;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.vrr.simplecloudservice.dto.request.RenameFileRequestDto;
 import org.vrr.simplecloudservice.dto.response.FileResponseDto;
+import org.vrr.simplecloudservice.facade.FileFacade;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.io.IOException;
 
 @RestController
-@RequestMapping("/list")
+@RequiredArgsConstructor
 public class FilesController {
+    private final FileFacade fileFacade;
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<Iterable<FileResponseDto>> getFiles(@RequestParam(name = "limit") Integer limit){
-        Random random = new Random();
-        System.out.println(limit);
-        List<FileResponseDto> qq = Stream.generate(() -> {
-            var s = new FileResponseDto();
-            s.setFileName("qq" + random.nextInt(44) + ".pdf");
-            s.setSize(random.nextInt(25));
-            return s;
-        }).limit(limit).toList();
-//        FileResponseDto d = new FileResponseDto();
-//        d.setSize(25);
-//        d.setFileName("25");
-        return ResponseEntity.ok(qq);
+        return ResponseEntity.ok(fileFacade.getLimitedList(limit));
+    }
+
+    @PostMapping("/file")
+    public ResponseEntity<Void> uploadFile(@RequestPart MultipartFile file,
+                                           @RequestParam(name = "filename") String fileName){
+        fileFacade.uploadFile(fileName, file);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/file")
+    public ResponseEntity<Void> deleteFile(@RequestParam(name = "filename") String fileName) {
+        fileFacade.deleteFile(fileName);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/file")
+    public ResponseEntity<Resource> downloadFile(@RequestParam(name = "filename") String fileName) throws IOException {
+        Resource resource = fileFacade.downloadObject(fileName);
+        return ResponseEntity.ok()
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .contentLength(resource.contentLength())
+                .body(resource);
+    }
+
+    @PutMapping("/file")
+    public ResponseEntity<Void> renameFile(@RequestParam(name = "filename") String fileName,
+                                           @RequestBody RenameFileRequestDto dto){
+        fileFacade.renameFile(fileName, dto.getNewFileName());
+        return ResponseEntity.ok().build();
     }
 }

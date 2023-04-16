@@ -1,4 +1,4 @@
-package org.vrr.simplecloudservice.dto.file;
+package org.vrr.simplecloudservice.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileDto implements Serializable {
+public class MinioFile implements Serializable {
 
     private String title;
 
@@ -24,6 +24,6 @@ public class FileDto implements Serializable {
 
     private Long size;
 
-    private String filename;
+    private String fileName;
 
 }
