@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.vrr.simplecloudservice.domain.MinioFile;
+import org.vrr.simplecloudservice.excecption.InvalidFileIdentifierException;
 import org.vrr.simplecloudservice.service.CloudStorageService;
 
 import java.io.InputStream;
@@ -53,14 +54,15 @@ public class CloudStorageServiceImpl implements CloudStorageService {
                             .size(i.get().size())
                             .build());
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    log.error("Can't load file list for {}", bucketName);
+                    throw new InvalidFileIdentifierException();
                 }
             });
             return objects;
         } catch (Exception e) {
-            log.error("Happened error when get list objects from minio: ", e);
+            log.error("Can't load file list for {}", bucketName);
+            throw new InvalidFileIdentifierException();
         }
-        return objects;
     }
 
     public InputStream getObject(String filename, String bucketName) {
@@ -72,7 +74,7 @@ public class CloudStorageServiceImpl implements CloudStorageService {
                     .build());
         } catch (Exception e) {
             log.error("Happened error when get list objects from minio: ", e);
-            return null;
+            throw new InvalidFileIdentifierException();
         }
 
         return stream;
@@ -86,7 +88,8 @@ public class CloudStorageServiceImpl implements CloudStorageService {
                     .stream(file.getInputStream(), file.getSize(), -1)
                     .build());
         } catch (Exception e) {
-            log.error("Happened error when upload file: ", e);
+            log.error("Happened error when upload file: {} for bucket {}", file, bucketName);
+            throw new InvalidFileIdentifierException();
         }
     }
 
@@ -96,7 +99,8 @@ public class CloudStorageServiceImpl implements CloudStorageService {
                     .bucket(bucketName)
                     .object(fileName).build());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Error while delete file {} from bucket {}", fileName, bucketName);
+            throw new InvalidFileIdentifierException();
         }
     }
 
@@ -109,16 +113,11 @@ public class CloudStorageServiceImpl implements CloudStorageService {
                             .bucket(bucketName)
                             .object(fileName).build())
                     .build());
-            deleteOldFile(bucketName, fileName);
+            deleteFile(bucketName, fileName);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Error while rename file {} in bucket {}", fileName, bucketName);
+            throw new InvalidFileIdentifierException();
         }
-    }
-
-    private void deleteOldFile(String bucketName, String fileName) throws Exception{
-        minioClient.removeObject(RemoveObjectArgs.builder()
-                .bucket(bucketName)
-                .object(fileName).build());
     }
 
     public void createBucket(String bucketName) {
@@ -128,6 +127,7 @@ public class CloudStorageServiceImpl implements CloudStorageService {
                     .build());
         } catch (Exception e) {
             log.error("Happened error when get creat bucket {}", bucketName, e);
+            throw new InvalidFileIdentifierException();
         }
     }
 }

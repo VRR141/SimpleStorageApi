@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.vrr.simplecloudservice.dto.response.CustomExceptionResponse;
 import org.vrr.simplecloudservice.excecption.ClientNotFoundByEmailException;
 import org.vrr.simplecloudservice.excecption.EmailAlreadyExistException;
+import org.vrr.simplecloudservice.excecption.InvalidFileIdentifierException;
 
 @RestControllerAdvice
 @Slf4j
@@ -31,6 +32,12 @@ public class DefaultRestExceptionHandler {
 
     @ExceptionHandler(ClientNotFoundByEmailException.class)
     public ResponseEntity<CustomExceptionResponse> handleClientNotFoundByEmailException(ClientNotFoundByEmailException e){
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handle(e));
+    }
+
+    @ExceptionHandler(InvalidFileIdentifierException.class)
+    public ResponseEntity<CustomExceptionResponse> handleInvalidFileIdentifierException(InvalidFileIdentifierException e){
         log.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(handle(e));
     }
