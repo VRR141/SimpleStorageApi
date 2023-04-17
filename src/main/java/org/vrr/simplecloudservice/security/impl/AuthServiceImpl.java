@@ -1,14 +1,21 @@
 package org.vrr.simplecloudservice.security.impl;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.vrr.simplecloudservice.dto.request.AuthenticationRequestDto;
 import org.vrr.simplecloudservice.security.AuthProvider;
 import org.vrr.simplecloudservice.security.AuthService;
+import org.vrr.simplecloudservice.security.LogoutService;
 import org.vrr.simplecloudservice.security.jwt.JwtUtil;
+
+import java.util.List;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -20,6 +27,11 @@ public class AuthServiceImpl implements AuthService {
     private final AuthProvider authProvider;
 
     private final JwtUtil jwtUtil;
+
+    private final LogoutService logoutService;
+
+    @Value("${jwt.filter.header.authorization}")
+    private String authTokenHeader;
 
     @Override
     public String login(AuthenticationRequestDto dto) {
@@ -33,5 +45,17 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Access token generated for user {}", uuid);
         return token;
+    }
+
+    @Override
+    public void logout(HttpServletRequest request) {
+        String strings = request.getHeader(authTokenHeader);
+        if (strings == null) {
+            //TODO add exc
+            throw new RuntimeException();
+        }
+        UUID authorizedUserUuid = authProvider.getAuthorizedUserUuid();
+        log.error("INIT LOGOUT FOR {}, BEARER {}", authorizedUserUuid, strings);
+        logoutService.logout(String.valueOf(authorizedUserUuid), strings);
     }
 }

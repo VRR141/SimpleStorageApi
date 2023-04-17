@@ -15,9 +15,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.vrr.simplecloudservice.security.AuthProvider;
+import org.vrr.simplecloudservice.security.LogoutService;
 import org.vrr.simplecloudservice.security.jwt.JwtUtil;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -43,6 +46,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
+    private final LogoutService logoutService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader(authorization);
@@ -52,6 +57,9 @@ public class JwtFilter extends OncePerRequestFilter {
             if (jwt.isBlank()){
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, INVALID_JWT_BEARER);
             } else {
+                if (logoutService.checkLogoutExistence(jwtUtil.getUuidFromToken(jwt), authHeader)){
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, INVALID_JWT_BEARER);
+                }
                 try {
                     String username = jwtUtil.validateTokenAndRetrieveClaim(jwt);
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);

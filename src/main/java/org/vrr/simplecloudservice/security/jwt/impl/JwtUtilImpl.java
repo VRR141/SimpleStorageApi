@@ -53,4 +53,9 @@ public class JwtUtilImpl implements JwtUtil {
         DecodedJWT jwt = verifier.verify(token);
         return jwt.getClaim(UUID_CLAIM_NAME).asString();
     }
+
+    public String getUuidFromToken(String token){
+        DecodedJWT decode = JWT.decode(token);
+        return decode.getClaim(UUID_CLAIM_NAME).asString();
+    }
 }
