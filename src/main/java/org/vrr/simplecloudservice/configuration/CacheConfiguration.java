@@ -25,17 +25,10 @@ public class CacheConfiguration {
                 .build();
     }
 
-//    @Bean("userDetailsCache")
-//    Cache<String, UserDetails> userDetailsCache(){
-//        return Caffeine.newBuilder()
-//                .expireAfterWrite(cacheProperties.getLogoutCacheDuration(), TimeUnit.MINUTES)
-//                .build();
-//    }
-
     @Bean("userDetailsCache")
     Caffeine userDetailsCache() {
         return Caffeine.newBuilder()
-                .expireAfterWrite(cacheProperties.getLogoutCacheDuration(), TimeUnit.MINUTES);
+                .expireAfterWrite(cacheProperties.getUserDetailsCacheDuration(), TimeUnit.MINUTES);
     }
     @Bean
     CacheManager cacheManager(@Qualifier("userDetailsCache") Caffeine caffeine){

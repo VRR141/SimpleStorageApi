@@ -44,7 +44,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         clientJpaRepository.save(client);
         clientProfileRepository.save(clientProfile);
 
-        //TODO test
         cloudStorageService.createBucket(String.valueOf(uuid));
 
         log.info("Client with email {} successfully registered", email);

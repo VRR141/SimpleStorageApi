@@ -12,4 +12,7 @@ public class CacheProperties {
 
     @Value("${logout.cache.duration}")
     private Integer logoutCacheDuration;
+
+    @Value("${user.details.cache.duration}")
+    private Integer userDetailsCacheDuration;
 }

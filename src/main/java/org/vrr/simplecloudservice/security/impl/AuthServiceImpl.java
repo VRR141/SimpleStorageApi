@@ -50,10 +50,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logout(HttpServletRequest request) {
         String jwt = request.getHeader(jwtProperties.getAuthorizationHeader());
-        if (jwt == null) {
-            //TODO add exc
-            throw new RuntimeException();
-        }
         UUID authorizedUserUuid = authProvider.getAuthorizedUserUuid();
         log.info("Init logout for {}", authorizedUserUuid);
         logoutService.logout(jwt);

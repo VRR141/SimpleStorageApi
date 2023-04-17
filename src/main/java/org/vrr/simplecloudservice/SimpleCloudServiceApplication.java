@@ -8,7 +8,7 @@ import org.springframework.cache.annotation.EnableCaching;
 @EnableCaching
 public class SimpleCloudServiceApplication {
 
-    //TODO ADD TESTS, COMPOSE, CACHE
+    //TODO ADD TESTS, COMPOSE
 
     public static void main(String[] args) {
        SpringApplication.run(SimpleCloudServiceApplication.class, args);
