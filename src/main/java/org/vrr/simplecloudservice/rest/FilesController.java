@@ -42,11 +42,10 @@ public class FilesController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/file")
+    @GetMapping(value = "/file", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Resource> downloadFile(@RequestParam(name = "filename") String fileName) throws IOException {
         Resource resource = fileFacade.downloadObject(fileName);
         return ResponseEntity.ok()
-                .contentType(MediaType.MULTIPART_FORM_DATA)
                 .contentLength(resource.contentLength())
                 .body(resource);
     }

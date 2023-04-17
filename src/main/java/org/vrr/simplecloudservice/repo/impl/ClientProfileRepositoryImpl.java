@@ -1,6 +1,7 @@
 package org.vrr.simplecloudservice.repo.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.vrr.simplecloudservice.domain.Client;
 import org.vrr.simplecloudservice.domain.ClientProfile;
@@ -45,6 +46,7 @@ public class ClientProfileRepositoryImpl implements ClientProfileRepository {
     }
 
     @Override
+    @Cacheable(key = "#uuid", value = "userDetailsCache")
     public ClientProfile findByUuid(String uuid) {
         return clientProfileJpaRepository.findClientProfileByClientUuid(UUID.fromString(uuid))
                 .orElseThrow(() -> new ClientNotFoundByUuidException(uuid));

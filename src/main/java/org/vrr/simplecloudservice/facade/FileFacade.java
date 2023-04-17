@@ -40,7 +40,7 @@ public class FileFacade {
         cloudStorageService.deleteFile(getBucketName(), fileName);
     }
 
-    //todo exception
+    //TODO exception
 
     public Resource downloadObject(String fileName) {
         try (InputStream inputStream = cloudStorageService.getObject(fileName, getBucketName())) {

@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.vrr.simplecloudservice.dto.request.AuthenticationRequestDto;
+import org.vrr.simplecloudservice.properties.JwtProperties;
 import org.vrr.simplecloudservice.security.AuthProvider;
 import org.vrr.simplecloudservice.security.AuthService;
 import org.vrr.simplecloudservice.security.LogoutService;
@@ -30,8 +31,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final LogoutService logoutService;
 
-    @Value("${jwt.filter.header.authorization}")
-    private String authTokenHeader;
+    private final JwtProperties jwtProperties;
 
     @Override
     public String login(AuthenticationRequestDto dto) {
@@ -49,13 +49,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(HttpServletRequest request) {
-        String strings = request.getHeader(authTokenHeader);
-        if (strings == null) {
+        String jwt = request.getHeader(jwtProperties.getAuthorizationHeader());
+        if (jwt == null) {
             //TODO add exc
             throw new RuntimeException();
         }
         UUID authorizedUserUuid = authProvider.getAuthorizedUserUuid();
-        log.error("INIT LOGOUT FOR {}, BEARER {}", authorizedUserUuid, strings);
-        logoutService.logout(String.valueOf(authorizedUserUuid), strings);
+        log.info("Init logout for {}", authorizedUserUuid);
+        logoutService.logout(jwt);
     }
 }

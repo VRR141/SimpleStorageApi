@@ -1,37 +1,36 @@
 package org.vrr.simplecloudservice.security.impl;
 
 import com.github.benmanes.caffeine.cache.Cache;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 import org.vrr.simplecloudservice.security.LogoutService;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.vrr.simplecloudservice.security.jwt.JwtUtil;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class LogoutServiceImpl implements LogoutService {
 
-    private final Cache<String, String> logoutCache;
+    private final Cache<String, Object> logoutCache;
+
+    private final JwtUtil jwtUtil;
+
+    private static final Object mock = new Object();
 
     @Override
-    public void logout(String username, String jwt) {
-        logoutCache.put(username, jwt);
-        log.info("Logout for {} successfully registered", username);
+    public void logout(String jwt) {
+        logoutCache.put(jwt, mock);
+        log.info("Logout successfully registered");
     }
 
     @Override
-    public boolean checkLogoutExistence(String username, String jwt) {
-        String s = logoutCache.getIfPresent(username);
+    public boolean checkLogoutExistence(String jwt) {
+        var s = logoutCache.getIfPresent(jwt);
         if (s == null){
             return false;
         } else {
-            return jwt.equals(s);
+            return s == mock;
         }
     }
 }

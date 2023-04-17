@@ -18,8 +18,6 @@ public class CloudServiceFacade {
 
     private final ClientProfileMapper mapper;
 
-    private final AuthProvider authProvider;
-
     public void registerClient(RegistrationRequestDto dto){
         ClientProfile clientProfile = mapper.mapRegistrationRequestDtoToClientProfile(dto);
         registrationService.registerClient(clientProfile);

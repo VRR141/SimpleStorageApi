@@ -2,6 +2,7 @@ package org.vrr.simplecloudservice.security.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,9 +16,6 @@ import org.vrr.simplecloudservice.repo.ClientProfileRepository;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final ClientProfileRepository clientProfileRepository;
-
-
-    //TODO add caching
 
     @Override
     @Transactional(readOnly = true)

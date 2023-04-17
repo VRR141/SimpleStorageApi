@@ -26,9 +26,8 @@ public class AuthenticationController {
         return ResponseEntity.ok(new AuthenticationResponseDto(token));
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     private ResponseEntity<Void> logout(HttpServletRequest request){
-        System.out.println(request);
         authService.logout(request);
         return ResponseEntity.ok().build();
     }
