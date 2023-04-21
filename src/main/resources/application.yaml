@@ -14,5 +14,5 @@ spring:
 cors:
   mapping: ${CORS_MAPPING:/**}
   origins: ${CORS_ORIGINS:http://localhost:8080/, http://192.168.50.199:8080/}
-  methods: ${CORS_METHODS:"*"}
-  headers: ${CORS_HEADERS:"*"}
+  methods: ${CORS_METHODS:POST, DELETE, GET, PUT}
+  headers: ${CORS_HEADERS:*}

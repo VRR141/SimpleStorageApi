@@ -38,13 +38,11 @@ public class CloudStorageServiceImpl implements CloudStorageService {
                             .bucket(bucketName)
                             .recursive(true)
                             .build());
-
-            //TODO add exception
-
             Streams.stream(result).sorted((i1, i2) -> {
                 try {
                     return i2.get().lastModified().compareTo(i1.get().lastModified());
                 } catch (Exception e) {
+                    log.error("Can't load file list for {}", bucketName);
                     throw new RuntimeException(e);
                 }
             }).limit(limit).forEach((i) -> {
@@ -55,7 +53,7 @@ public class CloudStorageServiceImpl implements CloudStorageService {
                             .build());
                 } catch (Exception e) {
                     log.error("Can't load file list for {}", bucketName);
-                    throw new InvalidFileIdentifierException();
+                    throw new RuntimeException();
                 }
             });
             return objects;
@@ -126,7 +124,7 @@ public class CloudStorageServiceImpl implements CloudStorageService {
                     .bucket(bucketName)
                     .build());
         } catch (Exception e) {
-            log.error("Happened error when get creat bucket {}", bucketName, e);
+            log.error("Happened error when creat bucket {}", bucketName, e);
             throw new InvalidFileIdentifierException();
         }
     }

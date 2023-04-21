@@ -14,14 +14,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class MinioFile implements Serializable {
 
-    private String title;
-
-    private String description;
-
-    private MultipartFile file;
-
-    private String url;
-
     private Long size;
 
     private String fileName;

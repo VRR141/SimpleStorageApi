@@ -1,0 +1,17 @@
+server:
+  servlet:
+    context-path: /cloud_service
+spring:
+  datasource:
+    url: ${DATASOURCE_URL}
+    password: ${DATASOURCE_PASS}
+    username: ${DATASOURCE_USER}
+  liquibase:
+    change-log: classpath:liquibase/changelog-master.yaml
+  jpa:
+    show-sql: true
+cors:
+  mapping: ${CORS_MAPPING:/**}
+  origins: ${CORS_ORIGINS:http://localhost:5555/, http://localhost:8080/, http://192.168.50.199:8080/}
+  methods: ${CORS_METHODS:POST, DELETE, GET, PUT}
+  headers: ${CORS_HEADERS:*}

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.vrr.simplecloudservice.domain.MinioFile;
 import org.vrr.simplecloudservice.dto.response.FileResponseDto;
+import org.vrr.simplecloudservice.excecption.InvalidFileIdentifierException;
 import org.vrr.simplecloudservice.mapper.FileMapper;
 import org.vrr.simplecloudservice.security.AuthProvider;
 import org.vrr.simplecloudservice.service.CloudStorageService;
@@ -40,15 +41,13 @@ public class FileFacade {
         cloudStorageService.deleteFile(getBucketName(), fileName);
     }
 
-    //TODO exception
-
     public Resource downloadObject(String fileName) {
         try (InputStream inputStream = cloudStorageService.getObject(fileName, getBucketName())) {
             byte[] res = inputStream.readAllBytes();
             ByteArrayResource resource = new ByteArrayResource(res);
             return resource;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new InvalidFileIdentifierException();
         }
     }
 
